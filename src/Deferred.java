@@ -14,7 +14,6 @@
  */
 public class Deferred<T> {
 
-
     /**
      *
      * @return the resolved value if such exists (i.e., if this object has been
