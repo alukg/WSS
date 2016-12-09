@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 /**
  * represents a work stealing thread pool - to understand what this class does
  * please refer to your assignment.
@@ -9,6 +11,8 @@
  * methods
  */
 public class WorkStealingThreadPool {
+    private Processor[] processors;
+    private boolean isStopped = false;
 
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
@@ -23,8 +27,10 @@ public class WorkStealingThreadPool {
      * thread pool
      */
     public WorkStealingThreadPool(int nthreads) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        processors = new Processor[nthreads];
+        for(int id=0; id<nthreads; id++){
+            processors[id] = new Processor(id,this);
+        }
     }
 
     /**
@@ -50,16 +56,19 @@ public class WorkStealingThreadPool {
      * shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        this.isStopped = true;
+        for(Processor processor : processors){
+            processor.();
+        }
     }
 
     /**
      * start the threads belongs to this thread pool
      */
     public void start() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        for(Processor processor : processors){
+            processor.run();
+        }
     }
 
 }
