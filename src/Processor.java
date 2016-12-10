@@ -1,3 +1,6 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * this class represents a single work stealing processor, it is
  * {@link Runnable} so it is suitable to be executed by threads.
@@ -13,6 +16,7 @@ public class Processor implements Runnable {
 
     private final WorkStealingThreadPool pool;
     private final int id;
+    private final ArrayDeque<Task> tasks;
 
     /**
      * constructor for this class
@@ -33,12 +37,21 @@ public class Processor implements Runnable {
     /*package*/ Processor(int id, WorkStealingThreadPool pool) {
         this.id = id;
         this.pool = pool;
+        this.tasks = new ArrayDeque<Task>();
     }
 
     @Override
     public void run() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        if(tasks.isEmpty())
+        {
+            //stealTask;
+        }
+        else
+        {
+            Task t = tasks.pollFirst();
+            t.handle(this);
+        }
+        //throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 
 }

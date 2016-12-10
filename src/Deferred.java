@@ -13,7 +13,8 @@
  * @param <T> the result type
  */
 public class Deferred<T> {
-
+        T result;
+        boolean isresolved;
     /**
      *
      * @return the resolved value if such exists (i.e., if this object has been
@@ -22,8 +23,7 @@ public class Deferred<T> {
      * this object is not yet resolved
      */
     public T get() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return result;
     }
 
     /**
@@ -32,8 +32,7 @@ public class Deferred<T> {
      * {@link #resolve(Object)} has been called on this object before.
      */
     public boolean isResolved() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        return isresolved;
     }
 
     /**
