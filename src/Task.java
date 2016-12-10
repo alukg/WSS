@@ -12,6 +12,7 @@ import java.util.Collection;
  * @param <R> the task result type
  */
 public abstract class Task<R> {
+    private Deferred deferred;
 
     /**
      * start handling the task - note that this method is protected, a handler
