@@ -12,6 +12,10 @@ import java.util.Collection;
  * @param <R> the task result type
  */
 public abstract class Task<R> {
+    private Deferred deferred;
+    private boolean is_started = false;
+    private int chiled_tasks;
+    private Runnable end_callback;
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -36,8 +40,12 @@ public abstract class Task<R> {
      * @param handler the handler that wants to handle the task
      */
     /*package*/ final void handle(Processor handler) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        if (!is_started){
+            is_started = true;
+            start();
+        }
+
+
     }
 
     /**
@@ -62,9 +70,8 @@ public abstract class Task<R> {
      * @param callback the callback to execute once all the results are resolved
      */
     protected final void whenResolved(Collection<? extends Task<?>> tasks, Runnable callback) {
-
-
-        //TODO: replace method body with real implementation
+        chiled_tasks = tasks.size();
+        end_callback = callback;
         throw new UnsupportedOperationException("Not Implemented Yet.");
     }
 
