@@ -16,12 +16,13 @@ import static java.lang.System.in;
  * @param <R> the task result type
  */
 public abstract class Task<R> {
-    private Deferred deferred;
+    private Deferred deferred = new Deferred<R>();
     private boolean is_started = false;
     private int chiled_tasks;
     private Runnable end_callback;
     private Processor currProc;
-    private AtomicInteger childsLocks;
+    private AtomicInteger childsLocks = new AtomicInteger(0);
+
 
     /**
      * start handling the task - note that this method is protected, a handler
@@ -47,7 +48,6 @@ public abstract class Task<R> {
     /*package*/
     final void handle(Processor handler) {
         if (!is_started) {
-            childsLocks.set(0);
             is_started = true;
             currProc = handler;
             start();
@@ -65,6 +65,8 @@ public abstract class Task<R> {
         for (Task t : task) {
             currProc.addTask(t);
             childsLocks.set(childsLocks.get() + 1);
+            int temp = currProc.getPool().getVersionMonitor().version.get();
+            currProc.getPool().getVersionMonitor().version.set(temp+1);
         }
     }
 

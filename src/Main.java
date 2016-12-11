@@ -8,10 +8,10 @@ public class Main {
         pool.start();
         pool.submit(myTask);
         //some stuff
-        try {
-            pool.shutdown(); //stopping all the processors when all the already submitted tasks are done
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            pool.shutdown(); //stopping all the processors when all the already submitted tasks are done
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 }

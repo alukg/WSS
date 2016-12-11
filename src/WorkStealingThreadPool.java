@@ -28,6 +28,7 @@ public class WorkStealingThreadPool {
      */
     public WorkStealingThreadPool(int nthreads) {
         numOfThreads = nthreads;
+        threads = new Thread[nthreads];
         processors = new Processor[nthreads];
         for (int id = 0; id < nthreads; id++) {
             processors[id] = new Processor(id, this);
@@ -43,6 +44,7 @@ public class WorkStealingThreadPool {
     public void submit(Task<?> task) {
         this.task = task;
         processors[0].addTask(task);
+        vm.inc();
     }
 
     /**
@@ -58,10 +60,11 @@ public class WorkStealingThreadPool {
      *                                       shutdown the queue is itself a processor of this queue
      */
     public void shutdown() throws InterruptedException {
-        if (task.getResult().isResolved()) {
-            for (Thread thread : threads){
-                thread.interrupt();
-            }
+        while (!task.getResult().isResolved()) {
+            Thread.currentThread().sleep(1000);
+        }
+        for (Thread thread : threads){
+            thread.interrupt();
         }
     }
 

@@ -56,21 +56,26 @@ public class Processor implements Runnable {
         }
     }
 
-    private void stealTask() throws InterruptedException{
-        int counter = id +1;
-        while (counter%pool.getNumOfProccessors() != id)
-        {
-            Processor currProc = pool.getProcessors()[counter%pool.getNumOfProccessors()];
-            if(currProc.tasks.size() >1){
-                for(int i=0;i<currProc.tasks.size()/2;i++)
-                {
-                    this.addTask(currProc.tasks.pollLast());
+    private void stealTask() throws InterruptedException {
+        int currVersion, counter = id + 1;
+        do {
+            currVersion = pool.getVersionMonitor().getVersion();
+            while (counter % pool.getNumOfProccessors() != id) {
+                Processor currProc = pool.getProcessors()[counter % pool.getNumOfProccessors()];
+                if (currProc.tasks.size() > 1) {
+                    for (int i = 0; i < currProc.tasks.size() / 2; i++) {
+                        this.addTask(currProc.tasks.pollLast());
+                    }
+                    break;
                 }
-                break;
+                else{
+                    counter++;
+                }
             }
-        }
+        } while (currVersion < pool.getVersionMonitor().getVersion());
         pool.getVersionMonitor().await(pool.getVersionMonitor().getVersion());
     }
+
     /**
      * add the task to the queue of the processor
      *
@@ -80,4 +85,7 @@ public class Processor implements Runnable {
         tasks.addFirst(task);
     }
 
+    WorkStealingThreadPool getPool(){
+        return pool;
+    }
 }

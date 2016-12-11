@@ -20,7 +20,7 @@ public class VersionMonitor {
     AtomicInteger version;
 
     VersionMonitor(){
-        version.set(0);
+        version = new AtomicInteger(0);
     }
 
     public int getVersion() {
@@ -33,12 +33,12 @@ public class VersionMonitor {
         do {
             oldV = version.get();
         }while(!version.compareAndSet(oldV,oldV+1));
+        this.notifyAll();
     }
 
     public void await(int version) throws InterruptedException {
-        int oldV = version;
         synchronized(this){
-            while(getVersion()!=oldV)
+            while(getVersion()==version)
                 wait();
         }
     }
