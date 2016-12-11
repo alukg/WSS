@@ -15,6 +15,7 @@
  * methods
  */
 public class VersionMonitor {
+    int version;
 
     public int getVersion() {
         //TODO: replace method body with real implementation
