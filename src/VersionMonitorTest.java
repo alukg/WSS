@@ -13,24 +13,21 @@ class VersionMonitorTest {
     Thread thread1;
     Thread thread2;
     Thread thread3;
+    Runnable run1;
+    Runnable run2;
+    Runnable run3;
+
     @BeforeAll
     void setUpAll() {
-        thread1 = new Thread(()-> {
-            for (int i = 0; i < 100; i++)
-                vs.inc();
-        });
-        thread2 = new Thread(()->{
-            for(int i=0; i<100; i++)
-                vs.inc();
-        });
-        thread3 = new Thread(()->{
-            for(int i=0; i<100; i++)
-                vs.inc();
-        });
+        thread1 = new Thread(run1);
+        thread2 = new Thread(run2);
+        thread3 = new Thread(run3);
     }
+
     @BeforeEach
     void setUp() {
         vs = new VersionMonitor();
+
     }
 
     @AfterEach
@@ -40,11 +37,23 @@ class VersionMonitorTest {
 
     @Test
     void getVersion() {
-        assertEquals(0,vs.getVersion());
+        assertEquals(0, vs.getVersion());
     }
 
     @Test
     void inc() {
+        run1 = () -> {
+            for (int i = 0; i < 100; i++)
+                inc();
+        };
+        run2 = () -> {
+            for (int i = 0; i < 100; i++)
+                inc();
+        };
+        run3 = () -> {
+            for (int i = 0; i < 100; i++)
+                inc();
+        };
         thread1.start();
         thread2.start();
         thread3.start();
@@ -52,9 +61,9 @@ class VersionMonitorTest {
             thread1.join();
             thread2.join();
             thread3.join();
+        } catch (InterruptedException e) {
         }
-        catch(InterruptedException e){}
-        assertEquals(300,vs.getVersion());
+        assertEquals(300, vs.getVersion());
 
     }
 

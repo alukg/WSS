@@ -14,6 +14,7 @@
  */
 public class Deferred<T> {
         T result;
+        Runnable endCallback = null;
         boolean isresolved;
     /**
      *
@@ -22,9 +23,7 @@ public class Deferred<T> {
      * @throws IllegalStateException in the case where this method is called and
      * this object is not yet resolved
      */
-    public T get() {
-        return result;
-    }
+    public T get() {return result;}
 
     /**
      *
@@ -48,8 +47,11 @@ public class Deferred<T> {
      * resolved
      */
     public void resolve(T value) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        result = value;
+        isresolved=true;
+        if(endCallback!=null){
+            endCallback.run();
+        }
     }
 
     /**
@@ -66,8 +68,12 @@ public class Deferred<T> {
      * resolved
      */
     public void whenResolved(Runnable callback) {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        if(isResolved()){
+            callback.run();
+        }
+        else{
+            endCallback = callback;
+        }
     }
 
 }

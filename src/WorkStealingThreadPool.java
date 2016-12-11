@@ -13,7 +13,7 @@ public class WorkStealingThreadPool {
     private Processor[] processors;
     private Task task;
     private int numOfThreads;
-
+    private VersionMonitor vm;
     /**
      * creates a {@link WorkStealingThreadPool} which has nthreads
      * {@link Processor}s. Note, threads should not get started until calling to
@@ -32,6 +32,7 @@ public class WorkStealingThreadPool {
         for (int id = 0; id < nthreads; id++) {
             processors[id] = new Processor(id, this);
         }
+        vm= new VersionMonitor();
     }
 
     /**
@@ -74,4 +75,15 @@ public class WorkStealingThreadPool {
         }
     }
 
+    public int getNumOfProccessors(){
+        return processors.length;
+    }
+
+    public Processor[] getProcessors(){
+        return  processors;
+    }
+
+    public VersionMonitor getVersionMonitor(){
+        return vm;
+    }
 }

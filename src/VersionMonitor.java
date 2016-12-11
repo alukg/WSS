@@ -1,3 +1,5 @@
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Describes a monitor that supports the concept of versioning - its idea is
  * simple, the monitor has a version number which you can receive via the method
@@ -15,20 +17,29 @@
  * methods
  */
 public class VersionMonitor {
-    int version;
+    AtomicInteger version;
 
-    public int getVersion() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    VersionMonitor(){
+        version.set(0);
     }
 
-    public void inc() {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+    public int getVersion() {
+        return version.get();
+        //throw new UnsupportedOperationException("Not Implemented Yet.");
+    }
+
+    synchronized public void inc() {
+        int oldV;
+        do {
+            oldV = version.get();
+        }while(!version.compareAndSet(oldV,oldV+1));
     }
 
     public void await(int version) throws InterruptedException {
-        //TODO: replace method body with real implementation
-        throw new UnsupportedOperationException("Not Implemented Yet.");
+        int oldV = version;
+        synchronized(this){
+            while(getVersion()!=oldV)
+                wait();
+        }
     }
 }

@@ -42,10 +42,10 @@ public class Processor implements Runnable {
 
     @Override
     public void run() {
-        while () {
+        while (true) {
             try {
                 if (tasks.isEmpty()) {
-                    //stealTask;
+                    stealTask();
                 } else {
                     Task t = tasks.pollFirst();
                     t.handle(this);
@@ -56,6 +56,21 @@ public class Processor implements Runnable {
         }
     }
 
+    private void stealTask() throws InterruptedException{
+        int counter = id +1;
+        while (counter%pool.getNumOfProccessors() != id)
+        {
+            Processor currProc = pool.getProcessors()[counter%pool.getNumOfProccessors()];
+            if(currProc.tasks.size() >1){
+                for(int i=0;i<currProc.tasks.size()/2;i++)
+                {
+                    this.addTask(currProc.tasks.pollLast());
+                }
+                break;
+            }
+        }
+        pool.getVersionMonitor().await(pool.getVersionMonitor().getVersion());
+    }
     /**
      * add the task to the queue of the processor
      *
