@@ -33,7 +33,9 @@ public class VersionMonitor {
         do {
             oldV = version.get();
         }while(!version.compareAndSet(oldV,oldV+1));
+        System.out.println("wake allThreads");
         this.notifyAll();
+
     }
 
     public void await(int version) throws InterruptedException {

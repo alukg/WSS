@@ -3,6 +3,7 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.in;
+import static java.util.Objects.isNull;
 
 /**
  * an abstract class that represents a task that may be executed using the
@@ -18,10 +19,11 @@ import static java.lang.System.in;
 public abstract class Task<R> {
     private Deferred deferred = new Deferred<R>();
     private boolean is_started = false;
-    private int chiled_tasks;
     private Runnable end_callback;
     private Processor currProc;
     private AtomicInteger childsLocks = new AtomicInteger(0);
+    private Task father;
+
 
 
     /**
@@ -63,6 +65,7 @@ public abstract class Task<R> {
      */
     protected final void spawn(Task<?>... task) {
         for (Task t : task) {
+            t.father = this;
             currProc.addTask(t);
             childsLocks.set(childsLocks.get() + 1);
             int temp = currProc.getPool().getVersionMonitor().version.get();
@@ -86,9 +89,10 @@ public abstract class Task<R> {
             task.deferred.whenResolved(() -> {
                 int oldV;
                 do {
-                    oldV = this.childsLocks.get();
-                }while(!this.childsLocks.compareAndSet(oldV,this.childsLocks.get()-1));
-                currProc.addTask(this);
+                    oldV = father.childsLocks.get();
+                } while (!father.childsLocks.compareAndSet(oldV, father.childsLocks.get() - 1));
+                if (father.childsLocks.get() == 0)
+                    currProc.addTask(father);
             });
         }
         //throw new UnsupportedOperationException("Not Implemented Yet.");
